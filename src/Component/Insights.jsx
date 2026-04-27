@@ -4,12 +4,13 @@ import Sidebar from "./Sidebar";
 export default function Insights() {
   const [user, setUser] = useState(null);
 
-  const subjects = ["Math", "Physics", "DSA", "OS"];
-
   useEffect(() => {
     const u = JSON.parse(localStorage.getItem("currentUser"));
     setUser(u);
   }, []);
+
+  // ✅ Dynamic subjects
+  const subjects = user?.subjects?.length ? user.subjects : ["Math"];
 
   const users = JSON.parse(localStorage.getItem("users")) || [];
 
@@ -59,7 +60,7 @@ export default function Insights() {
 
       return { sub, msg: "Good performance", type: "good" };
     });
-  }, [user, classmates]);
+  }, [user, classmates, subjects]);
 
   // 🔥 Suggestions
   const suggestions = insights.map((i) => {
@@ -75,7 +76,7 @@ export default function Insights() {
   // 🔥 Overall Prediction
   const avgScore =
     Object.values(user?.marks || {}).reduce((a, b) => a + b, 0) /
-      subjects.length || 0;
+      (subjects.length || 1);
 
   const prediction =
     avgScore > 80
@@ -97,13 +98,12 @@ export default function Insights() {
           AI Insights
         </h1>
 
-        {/* 🔥 Subject Insights */}
+        {/* Subject Insights */}
         <div className="card">
           <h3 className="mb-4">Subject Analysis</h3>
 
           {insights.map((i) => (
             <div key={i.sub} className="flex justify-between mb-2">
-
               <span>{i.sub}</span>
 
               <span
@@ -119,12 +119,11 @@ export default function Insights() {
               >
                 {i.msg}
               </span>
-
             </div>
           ))}
         </div>
 
-        {/* 🔥 Suggestions */}
+        {/* Suggestions */}
         <div className="card">
           <h3 className="mb-4">Personalized Suggestions</h3>
 
@@ -133,7 +132,7 @@ export default function Insights() {
           )}
         </div>
 
-        {/* 🔥 Rank */}
+        {/* Rank */}
         <div className="card">
           <h3>Class Standing</h3>
           <p className="text-indigo-400 mt-2">
@@ -141,7 +140,7 @@ export default function Insights() {
           </p>
         </div>
 
-        {/* 🔥 Prediction */}
+        {/* Prediction */}
         <div className="card">
           <h3>Performance Prediction</h3>
           <p className="mt-2">{prediction}</p>

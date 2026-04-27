@@ -1,13 +1,68 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.card {
+  @apply bg-white/10 backdrop-blur-xl p-6 rounded-xl border border-white/20;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.input {
+  @apply p-3 rounded-xl bg-white/10 text-white outline-none;
+}
+
+.btn {
+  @apply bg-indigo-600 px-4 py-2 rounded-xl;
+}
+
+.card {
+  @apply bg-white/10 backdrop-blur-xl p-6 rounded-xl border border-white/20;
+}
+.input {
+  @apply p-3 rounded-xl bg-white/10 text-white outline-none;
+}
+.btn {
+  @apply bg-indigo-600 px-4 py-2 rounded-xl;
+}
+
+.card {
+  @apply bg-white/10 backdrop-blur-xl p-6 rounded-xl border border-white/20;
+}
+
+.card {
+  @apply bg-white/10 backdrop-blur-xl p-6 rounded-xl border border-white/20;
+}
+
+.input {
+  @apply p-3 rounded-xl bg-white/10 text-white outline-none w-full;
+}
+
+.btn {
+  @apply bg-indigo-600 px-4 py-2 rounded-xl;
+}
+
+.card {
+  @apply bg-white/10 backdrop-blur-xl p-6 rounded-xl border border-white/20;
+}
+
+.input {
+  @apply p-3 rounded-xl bg-white/10 text-white outline-none;
+}
+
+.glass-card {
+  @apply bg-white/10 backdrop-blur-xl p-6 rounded-2xl border border-white/20 shadow-xl;
+}
+
+.section-title {
+  @apply text-lg font-semibold;
+}
+
+.input {
+  @apply p-3 rounded-xl bg-white/10 text-white outline-none w-full;
+}
+
+.btn-primary {
+  @apply bg-gradient-to-r from-indigo-500 to-purple-500 px-4 py-2 rounded-xl hover:scale-105 transition;
+}
+
+.btn-danger {
+  @apply bg-red-500 px-4 py-2 rounded-xl hover:scale-105 transition;
 }

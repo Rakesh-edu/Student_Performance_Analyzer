@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Sidebar from "./Sidebar";
 
 export default function ClassPerformance() {
@@ -12,7 +12,11 @@ export default function ClassPerformance() {
     setUsers(data);
   }, []);
 
-  const subjects = ["Math", "Physics", "DSA", "OS"];
+  // ✅ Dynamic subjects (from all users)
+  const subjects = useMemo(() => {
+    const allSubjects = users.flatMap((u) => u.subjects || []);
+    return [...new Set(allSubjects)];
+  }, [users]);
 
   // 🔥 Filter logic
   const filteredUsers = users.filter((u) => {
@@ -22,7 +26,7 @@ export default function ClassPerformance() {
     );
   });
 
-  // 🔥 Calculate score
+  // 🔥 Score calculation
   const getScore = (user) => {
     if (filterSubject === "overall") {
       return Object.values(user.marks || {}).reduce((a, b) => a + b, 0);
@@ -30,7 +34,7 @@ export default function ClassPerformance() {
     return user.marks?.[filterSubject] || 0;
   };
 
-  // 🔥 Sort users
+  // 🔥 Sorting
   const sortedUsers = [...filteredUsers].sort(
     (a, b) => getScore(b) - getScore(a)
   );
@@ -63,19 +67,21 @@ export default function ClassPerformance() {
             className="input"
           />
 
+          {/* ✅ Dynamic Subject Dropdown */}
           <select
-  onChange={(e) => setFilterSubject(e.target.value)}
-  className="input bg-white/10 text-white appearance-none"
->
-  <option value="overall" className="bg-black text-white">
-    Overall
-  </option>
-  {subjects.map((s) => (
-    <option key={s} className="bg-black text-white">
-      {s}
-    </option>
-  ))}
-</select>
+            onChange={(e) => setFilterSubject(e.target.value)}
+            className="input bg-white/10 text-white appearance-none"
+          >
+            <option value="overall" className="bg-black text-white">
+              Overall
+            </option>
+
+            {subjects.map((s) => (
+              <option key={s} className="bg-black text-white">
+                {s}
+              </option>
+            ))}
+          </select>
 
         </div>
 

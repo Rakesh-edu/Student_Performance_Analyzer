@@ -28,6 +28,8 @@ export default function Login() {
 
   if (validUser) {
     alert("Login successful!");
+    localStorage.setItem("currentUser", JSON.stringify(validUser));
+navigate("/home");
   } else {
     alert("Invalid credentials");
   }

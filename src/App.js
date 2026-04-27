@@ -1,24 +1,55 @@
-import logo from './logo.svg';
-import './App.css';
+// import { BrowserRouter,Routes,Route } from 'react-router-dom';
+// import './App.css';
+// import Login from './Component/Login';
+// import Signin from './Component/Signin';
+// import Home from './Component/Home';
+// import Performance from "./Component/Performance";
+// import Insights from "./Component/Insights";
+// import Settings from "./Component/Settings";
+// function App() {
+//   return (
+//     <div className="App">
+//       <BrowserRouter>
+//         <Routes>
+//           <Route path='/' element={<Signin/>}/>
+//           <Route path='/login' element={<Login/>}/>
+//           <Route path='/home' element={<Home/>}/>
+//           <Route path='/performance' element={<Performance />} />
+//           <Route path='/insights' element={<Insights />} />
+//           <Route path='/settings' element={<Settings />} />
+//         </Routes>
+//       </BrowserRouter>
+//     </div>
+//   );
+// }
+
+// export default App;
+
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import "./App.css";
+
+import Login from "./Component/Login.jsx";
+import Signin from "./Component/Signin.jsx";
+import Home from "./Component/Home.jsx";
+import Performance from "./Component/Performance.jsx";
+import Insights from "./Component/Insights.jsx";
+import Settings from "./Component/Settings.jsx";
+import ClassPerformance from "./Component/ClassPerformance.jsx";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Signin />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/performance" element={<Performance />} />
+        <Route path="/insights" element={<Insights />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/class-performance" element={<ClassPerformance />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
