@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { API } from "../api";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -10,35 +11,52 @@ export default function Login() {
   });
 
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
 
-  const users = JSON.parse(localStorage.getItem("users")) || [];
+    // basic validation
+    if (!formData.studentId || !formData.password) {
+      setError("Please fill all fields");
+      return;
+    }
 
-  const validUser = users.find(
-    (user) =>
-      user.studentId === formData.studentId &&
-      user.password === formData.password
-  );
+    try {
+      setLoading(true);
 
-  if (validUser) {
-    alert("Login successful!");
-    localStorage.setItem("currentUser", JSON.stringify(validUser));
-navigate("/home");
-  } else {
-    alert("Invalid credentials");
-  }
-};
+      const res = await API.get("/users");
+
+      const user = res.data.find(
+        (u) =>
+          u.studentId === formData.studentId &&
+          u.password === formData.password
+      );
+
+      if (user) {
+        localStorage.setItem("currentUser", JSON.stringify(user));
+        navigate("/home");
+      } else {
+        setError("Invalid Student ID or Password");
+      }
+
+    } catch (err) {
+      setError("Server error. Try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-slate-900 to-black">
 
-      {/* 3D glow */}
+      {/* Background glow */}
       <div className="absolute w-96 h-96 bg-indigo-500 rounded-full blur-3xl opacity-20 top-10 right-10"></div>
       <div className="absolute w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-20 bottom-10 left-10"></div>
 
@@ -50,34 +68,59 @@ navigate("/home");
 
         <form onSubmit={handleSubmit} className="space-y-4">
 
+          {/* Student ID */}
           <input
             name="studentId"
+            value={formData.studentId}
+            onChange={handleChange}
             placeholder="Student ID"
-            onChange={handleChange}
-            className="w-full p-3 bg-white/10 text-white rounded-xl"
+            className="w-full p-3 bg-white/10 text-white rounded-xl outline-none"
           />
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            onChange={handleChange}
-            className="w-full p-3 bg-white/10 text-white rounded-xl"
-          />
+          {/* Password */}
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Password"
+              className="w-full p-3 bg-white/10 text-white rounded-xl outline-none"
+            />
 
-          {error && <p className="text-red-400 text-sm">{error}</p>}
+            {/* Toggle */}
+            <span
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-3 text-sm text-gray-400 cursor-pointer"
+            >
+              {showPassword ? "Hide" : "Show"}
+            </span>
+          </div>
 
-          <button className="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl">
-            Login
+          {/* Error */}
+          {error && (
+            <p className="text-red-400 text-sm text-center">{error}</p>
+          )}
+
+          {/* Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl transition-all"
+          >
+            {loading ? "Logging in..." : "Login"}
           </button>
+
         </form>
 
+        {/* Redirect */}
         <p className="text-sm text-gray-400 mt-4 text-center">
           New user?{" "}
-          <Link to="/" className="text-indigo-400">
+          <Link to="/" className="text-indigo-400 hover:underline">
             Sign up
           </Link>
         </p>
+
       </div>
     </div>
   );

@@ -1,0 +1,158 @@
+{
+  "users": [
+    {
+      "studentId": "22d41a0509",
+      "password": "rakesh",
+      "className": "10",
+      "college": "bvrit",
+      "subjects": [
+        "Math",
+        "physics",
+        "biology",
+        "chemistry"
+      ],
+      "marks": {
+        "Math": 100,
+        "physics": 100,
+        "biology": 100,
+        "chemistry": 100
+      },
+      "id": "eNX4PU0SJ7Y",
+      "marksHistory": [
+        {
+          "date": "2026-04-27",
+          "marks": {
+            "Math": 99,
+            "physics": 45,
+            "biology": 87,
+            "chemistry": 23
+          }
+        },
+        {
+          "date": "2026-04-27",
+          "marks": {
+            "Math": 98,
+            "physics": 45,
+            "biology": 87,
+            "chemistry": 23
+          }
+        },
+        {
+          "date": "2026-04-27",
+          "marks": {
+            "Math": 100,
+            "physics": 100,
+            "biology": 100,
+            "chemistry": 100
+          }
+        }
+      ]
+    },
+    {
+      "studentId": "22d41a0510",
+      "password": "rakesh",
+      "className": "10",
+      "college": "bvrit",
+      "subjects": [
+        "Math",
+        "physics",
+        "biology",
+        "chemistry"
+      ],
+      "marks": {
+        "Math": 12,
+        "physics": 23,
+        "biology": 34,
+        "chemistry": 45
+      },
+      "id": "np9-YCBv6x4"
+    },
+    {
+      "studentId": "22d41a0511",
+      "password": "rakesh",
+      "className": "10",
+      "college": "bvrit",
+      "subjects": [
+        "Math",
+        "physics",
+        "biology",
+        "chemistry"
+      ],
+      "marks": {
+        "Math": 11,
+        "physics": 12,
+        "biology": 13,
+        "chemistry": 14
+      },
+      "id": "gSRlsbJmwhI"
+    },
+    {
+      "studentId": "22d41a0512",
+      "password": "rakesh",
+      "className": "10",
+      "college": "bvrit",
+      "subjects": [
+        "Math",
+        "physics",
+        "biology",
+        "chemistry"
+      ],
+      "marks": {
+        "Math": 100,
+        "physics": 100,
+        "chemistry": 100,
+        "biology": 100
+      },
+      "id": "UUWiWxjbnWY"
+    },
+    {
+      "studentId": "22d41a0513",
+      "password": "rakesh",
+      "className": "10",
+      "college": "bvrit",
+      "subjects": [
+        "Math",
+        "physics",
+        "chemistry",
+        "biology"
+      ],
+      "marks": {
+        "Math": 11,
+        "physics": 12,
+        "chemistry": null,
+        "biology": 14
+      },
+      "id": "-OFoJ1_Ugrk",
+      "marksHistory": [
+        {
+          "date": "2026-04-27",
+          "marks": {
+            "Math": 11,
+            "physics": 12,
+            "chemistry": 13,
+            "biology": 14
+          }
+        },
+        {
+          "date": "2026-04-27",
+          "marks": {
+            "Math": 11,
+            "physics": 12,
+            "chemistry": 13,
+            "biology": 14
+          }
+        },
+        {
+          "date": "2026-04-27",
+          "marks": {
+            "Math": 11,
+            "physics": 12,
+            "chemistry": null,
+            "biology": 14
+          }
+        }
+      ]
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

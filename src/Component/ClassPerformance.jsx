@@ -1,24 +1,29 @@
 import { useEffect, useState, useMemo } from "react";
 import Sidebar from "./Sidebar";
+import { API } from "../api";
 
 export default function ClassPerformance() {
   const [users, setUsers] = useState([]);
   const [filterClass, setFilterClass] = useState("");
   const [filterCollege, setFilterCollege] = useState("");
   const [filterSubject, setFilterSubject] = useState("overall");
+  const [loading, setLoading] = useState(true);
 
+  // 🔥 Fetch users from API
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("users")) || [];
-    setUsers(data);
+    API.get("/users").then((res) => {
+      setUsers(res.data);
+      setLoading(false);
+    });
   }, []);
 
-  // ✅ Dynamic subjects (from all users)
+  // ✅ Dynamic subjects
   const subjects = useMemo(() => {
     const allSubjects = users.flatMap((u) => u.subjects || []);
     return [...new Set(allSubjects)];
   }, [users]);
 
-  // 🔥 Filter logic
+  // 🔥 Filters
   const filteredUsers = users.filter((u) => {
     return (
       (!filterClass || u.className === filterClass) &&
@@ -26,7 +31,7 @@ export default function ClassPerformance() {
     );
   });
 
-  // 🔥 Score calculation
+  // 🔥 Score
   const getScore = (user) => {
     if (filterSubject === "overall") {
       return Object.values(user.marks || {}).reduce((a, b) => a + b, 0);
@@ -40,6 +45,8 @@ export default function ClassPerformance() {
   );
 
   const topPerformer = sortedUsers[0];
+
+  if (loading) return <p className="text-white p-8">Loading...</p>;
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-black via-indigo-900 to-black text-white">
@@ -67,7 +74,6 @@ export default function ClassPerformance() {
             className="input"
           />
 
-          {/* ✅ Dynamic Subject Dropdown */}
           <select
             onChange={(e) => setFilterSubject(e.target.value)}
             className="input bg-white/10 text-white appearance-none"
@@ -95,12 +101,23 @@ export default function ClassPerformance() {
               {topPerformer.studentId}
             </p>
 
-            <p>
-              Score: {getScore(topPerformer)}
-            </p>
+            <p>Score: {getScore(topPerformer)}</p>
 
           </div>
         )}
+
+        {/* 🥇 TOP 3 (UPGRADE 🔥) */}
+        <div className="grid grid-cols-3 gap-4">
+          {sortedUsers.slice(0, 3).map((u, i) => (
+            <div key={u.id} className="card text-center">
+              <p className="text-xl">
+                {i === 0 ? "🥇" : i === 1 ? "🥈" : "🥉"}
+              </p>
+              <p>{u.studentId}</p>
+              <p>{getScore(u)}</p>
+            </div>
+          ))}
+        </div>
 
         {/* 📊 LEADERBOARD */}
         <div className="card">
@@ -118,8 +135,10 @@ export default function ClassPerformance() {
 
             <tbody>
               {sortedUsers.map((u, i) => (
-                <tr key={u.studentId}>
-                  <td>#{i + 1}</td>
+                <tr key={u.id}>
+                  <td>
+                    {i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`}
+                  </td>
                   <td>{u.studentId}</td>
                   <td>{getScore(u)}</td>
                 </tr>

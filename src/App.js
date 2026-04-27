@@ -1,30 +1,3 @@
-// import { BrowserRouter,Routes,Route } from 'react-router-dom';
-// import './App.css';
-// import Login from './Component/Login';
-// import Signin from './Component/Signin';
-// import Home from './Component/Home';
-// import Performance from "./Component/Performance";
-// import Insights from "./Component/Insights";
-// import Settings from "./Component/Settings";
-// function App() {
-//   return (
-//     <div className="App">
-//       <BrowserRouter>
-//         <Routes>
-//           <Route path='/' element={<Signin/>}/>
-//           <Route path='/login' element={<Login/>}/>
-//           <Route path='/home' element={<Home/>}/>
-//           <Route path='/performance' element={<Performance />} />
-//           <Route path='/insights' element={<Insights />} />
-//           <Route path='/settings' element={<Settings />} />
-//         </Routes>
-//       </BrowserRouter>
-//     </div>
-//   );
-// }
-
-// export default App;
-
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";

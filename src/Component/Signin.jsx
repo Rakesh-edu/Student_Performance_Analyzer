@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { API } from "../api";
 
 export default function Signin() {
   const navigate = useNavigate();
@@ -11,41 +12,73 @@ export default function Signin() {
     college: "",
   });
 
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const handleSubmit = (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
 
-  const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+    // 🔥 validation
+    if (
+      !formData.studentId ||
+      !formData.password ||
+      !formData.className ||
+      !formData.college
+    ) {
+      setError("Please fill all fields");
+      return;
+    }
 
-  const userExists = existingUsers.find(
-    (user) => user.studentId === formData.studentId
-  );
+    try {
+      setLoading(true);
 
-  if (userExists) {
-    alert("User already exists!");
-    return;
-  }
+      const res = await API.get("/users");
 
-  // ✅ add new user
-  existingUsers.push(formData);
-  localStorage.setItem("users", JSON.stringify(existingUsers));
+      const exists = res.data.find(
+        (u) => u.studentId === formData.studentId
+      );
 
-  // ✅ VERY IMPORTANT: store logged-in user
-  localStorage.setItem("currentUser", JSON.stringify(formData));
+      if (exists) {
+        setError("User already exists");
+        return;
+      }
 
-  alert("Account created!");
+      const newUser = {
+        ...formData,
+        subjects: ["Math"], // default subject
+        marks: {},
+      };
 
-  // ✅ go directly to home
-  navigate("/home");
-};
+      // 🔥 IMPORTANT: use API response (contains id)
+      const response = await API.post("/users", newUser);
+
+      // ✅ store user WITH id
+      localStorage.setItem(
+        "currentUser",
+        JSON.stringify(response.data)
+      );
+
+      navigate("/home");
+
+    } catch (err) {
+      setError("Error creating account. Try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-slate-900 to-black">
 
-      {/* 3D glow background */}
+      {/* Background glow */}
       <div className="absolute w-96 h-96 bg-indigo-500 rounded-full blur-3xl opacity-20 top-10 left-10"></div>
       <div className="absolute w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-20 bottom-10 right-10"></div>
 
@@ -57,46 +90,66 @@ export default function Signin() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
 
+          {/* Student ID */}
           <input
             name="studentId"
-            placeholder="Student ID"
+            value={formData.studentId}
             onChange={handleChange}
+            placeholder="Student ID"
             className="w-full p-3 bg-white/10 text-white rounded-xl outline-none"
           />
 
+          {/* Class */}
           <input
             name="className"
-            placeholder="Class (B.Tech CSE)"
+            value={formData.className}
             onChange={handleChange}
+            placeholder="Class (B.Tech CSE)"
             className="w-full p-3 bg-white/10 text-white rounded-xl"
           />
 
+          {/* College */}
           <input
             name="college"
-            placeholder="College Name"
+            value={formData.college}
             onChange={handleChange}
+            placeholder="College Name"
             className="w-full p-3 bg-white/10 text-white rounded-xl"
           />
 
+          {/* Password */}
           <input
             type="password"
             name="password"
-            placeholder="Password"
+            value={formData.password}
             onChange={handleChange}
+            placeholder="Password"
             className="w-full p-3 bg-white/10 text-white rounded-xl"
           />
 
-          <button className="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl transition-all">
-            Sign Up
+          {/* Error */}
+          {error && (
+            <p className="text-red-400 text-sm text-center">{error}</p>
+          )}
+
+          {/* Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl transition-all"
+          >
+            {loading ? "Creating..." : "Sign Up"}
           </button>
         </form>
 
+        {/* Redirect */}
         <p className="text-sm text-gray-400 mt-4 text-center">
           Already have an account?{" "}
-          <Link to="/login" className="text-indigo-400">
+          <Link to="/login" className="text-indigo-400 hover:underline">
             Login
           </Link>
         </p>
+
       </div>
     </div>
   );

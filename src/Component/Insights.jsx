@@ -1,26 +1,35 @@
 import { useEffect, useState, useMemo } from "react";
 import Sidebar from "./Sidebar";
+import { API } from "../api";
 
 export default function Insights() {
   const [user, setUser] = useState(null);
+  const [users, setUsers] = useState([]);
 
+  // 🔥 Load current user
   useEffect(() => {
     const u = JSON.parse(localStorage.getItem("currentUser"));
     setUser(u);
   }, []);
 
+  // 🔥 Fetch all users from API
+  useEffect(() => {
+    API.get("/users").then((res) => {
+      setUsers(res.data);
+    });
+  }, []);
+
   // ✅ Dynamic subjects
   const subjects = user?.subjects?.length ? user.subjects : ["Math"];
 
-  const users = JSON.parse(localStorage.getItem("users")) || [];
-
+  // 🔥 Same class users
   const classmates = users.filter(
     (u) =>
       u.className === user?.className &&
       u.college === user?.college
   );
 
-  // 🔥 Average
+  // 🔥 Average calculation
   const getAverage = (sub) => {
     const total = classmates.reduce(
       (sum, s) => sum + (s.marks?.[sub] || 0),
@@ -29,18 +38,22 @@ export default function Insights() {
     return classmates.length ? total / classmates.length : 0;
   };
 
-  // 🔥 Rank
+  // 🔥 Rank (FIXED ✅)
   const rank = useMemo(() => {
+    if (!user) return "N/A";
+
     const sorted = [...classmates].sort((a, b) => {
-      const avgA = Object.values(a.marks || {}).reduce((x, y) => x + y, 0);
-      const avgB = Object.values(b.marks || {}).reduce((x, y) => x + y, 0);
-      return avgB - avgA;
+      const totalA = Object.values(a.marks || {}).reduce((x, y) => x + y, 0);
+      const totalB = Object.values(b.marks || {}).reduce((x, y) => x + y, 0);
+      return totalB - totalA;
     });
 
-    return sorted.findIndex((s) => s.studentId === user?.studentId) + 1;
+    const index = sorted.findIndex((s) => s.id === user.id);
+
+    return index !== -1 ? index + 1 : "N/A";
   }, [classmates, user]);
 
-  // 🔥 AI Analysis
+  // 🔥 AI Insights
   const insights = useMemo(() => {
     return subjects.map((sub) => {
       const your = user?.marks?.[sub] || 0;
@@ -73,7 +86,7 @@ export default function Insights() {
     return null;
   });
 
-  // 🔥 Overall Prediction
+  // 🔥 Prediction
   const avgScore =
     Object.values(user?.marks || {}).reduce((a, b) => a + b, 0) /
       (subjects.length || 1);
@@ -85,7 +98,8 @@ export default function Insights() {
       ? "📈 You can improve to reach top ranks"
       : "⚠️ You need strong focus to improve performance";
 
-  if (!user) return <p className="text-white">Loading...</p>;
+  // 🔥 Safety loading
+  if (!user) return <p className="text-white p-8">Loading...</p>;
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-black via-indigo-900 to-black text-white">
@@ -98,7 +112,7 @@ export default function Insights() {
           AI Insights
         </h1>
 
-        {/* Subject Insights */}
+        {/* Subject Analysis */}
         <div className="card">
           <h3 className="mb-4">Subject Analysis</h3>
 
