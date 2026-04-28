@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo,useCallback } from "react";
 import { API } from "../api";
 
 export default function Insights() {
@@ -45,17 +45,17 @@ export default function Insights() {
   );
 
   // 🔥 Average (FIXED - ignore empty marks)
-  const getAverage = (sub) => {
-    const valid = classmates.filter(
-      (s) => s.marks && s.marks[sub] !== undefined
-    );
+  const getAverage = useCallback((sub) => {
+  const valid = classmates.filter(
+    (s) => s.marks && s.marks[sub] !== undefined
+  );
 
-    if (valid.length === 0) return 0;
+  if (valid.length === 0) return 0;
 
-    const total = valid.reduce((sum, s) => sum + s.marks[sub], 0);
+  const total = valid.reduce((sum, s) => sum + s.marks[sub], 0);
 
-    return total / valid.length;
-  };
+  return total / valid.length;
+}, [classmates]);
 
   // 🔥 Rank
   const rank = useMemo(() => {

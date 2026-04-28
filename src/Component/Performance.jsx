@@ -9,9 +9,11 @@ export default function Performance() {
   const [filter, setFilter] = useState("month");
 
   useEffect(() => {
+  if (typeof window !== "undefined") {
     const u = JSON.parse(localStorage.getItem("currentUser"));
     setUser(u);
-  }, []);
+  }
+}, []);
 
   const subjects = user?.subjects || [];
 

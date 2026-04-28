@@ -10,12 +10,26 @@ export default function ClassPerformance() {
 
   // 🔥 Fetch users from API
   useEffect(() => {
-    API.get("/users").then((res) => {
+  const fetchUsers = async () => {
+    try {
+      const res = await API.get("/users");
       setUsers(res.data);
-      setLoading(false);
-    });
-  }, []);
+    } catch (err) {
+      console.log("API failed, using localStorage");
 
+      const localUsers =
+        typeof window !== "undefined"
+          ? JSON.parse(localStorage.getItem("users")) || []
+          : [];
+
+      setUsers(localUsers);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchUsers();
+}, []);
   // const data =
   //   typeof window !== "undefined"
   //     ? JSON.parse(localStorage.getItem("users")) || []
