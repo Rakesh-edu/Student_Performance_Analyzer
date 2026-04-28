@@ -1,70 +1,75 @@
-# Getting Started with Create React App
+# Student Performance Analyzer
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a frontend project I built using React.js to track and analyze student performance.  
+The main idea was to create a simple system where a student can enter marks, see progress over time, and understand where they need to improve.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Live Demo
+https://student-performance-analyzer-fn77.vercel.app/
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Tech Used
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- React.js  
+- Tailwind CSS  
+- Recharts (for graphs)  
+- LocalStorage (for saving data)
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## What the project does
 
-### `npm run build`
+- Users can sign up and log in (no backend required)
+- Add subjects and enter marks
+- View performance using charts (bar, line, pie)
+- Track improvement over time
+- See rank compared to classmates
+- Get basic insights like:
+  - weak subjects  
+  - strong subjects  
+  - overall performance  
+- Settings page to update profile and reset data
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## How it works
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+All the data is stored in localStorage, so the app works even without a backend.  
+I also handled cases where API might fail by falling back to localStorage.
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Why I built this
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+I wanted to build something more than a basic CRUD app.  
+This project helped me understand:
+- how to manage state in React
+- how to work with charts and data visualization
+- how to handle real-world issues like missing backend
+- how to structure a multi-page application
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## What I learned
 
-## Learn More
+- Using React hooks properly (useState, useEffect, useMemo)
+- Handling edge cases like empty data or missing user
+- Managing user data without a backend
+- Building a complete UI with multiple features
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Future improvements
 
-### Code Splitting
+- Add backend (Node.js or Django)
+- Add authentication system
+- Store data in a real database
+- Improve UI and responsiveness
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## Author
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Rakesh Banavath
