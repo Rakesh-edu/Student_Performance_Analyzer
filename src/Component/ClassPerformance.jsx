@@ -16,10 +16,10 @@ export default function ClassPerformance() {
     });
   }, []);
 
-  const data =
-    typeof window !== "undefined"
-      ? JSON.parse(localStorage.getItem("users")) || []
-      : [];
+  // const data =
+  //   typeof window !== "undefined"
+  //     ? JSON.parse(localStorage.getItem("users")) || []
+  //     : [];
 
   // ✅ Dynamic subjects
   const subjects = useMemo(() => {

@@ -95,7 +95,7 @@ export default function Insights() {
 
       return { sub, msg: "Good performance", type: "good" };
     });
-  }, [user, classmates, subjects]);
+  }, [user, classmates, subjects, getAverage]);
 
   // 🔥 Suggestions
   const suggestions = insights.map((i) => {

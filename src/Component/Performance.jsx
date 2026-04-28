@@ -95,7 +95,7 @@ export default function Performance() {
 
       return { sub, status: "Good", color: "text-blue-400" };
     });
-  }, [user, classmates]);
+  }, [user, classmates, subjects, getAverage]);
 
   if (!user) return <p className="text-white">Loading...</p>;
 
