@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 
@@ -9,18 +8,28 @@ import Performance from "./Component/Performance.jsx";
 import Insights from "./Component/Insights.jsx";
 import Settings from "./Component/Settings.jsx";
 import ClassPerformance from "./Component/ClassPerformance.jsx";
+import Layout from "./Component/Layout.jsx";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+
+        {/* ❌ No sidebar pages */}
         <Route path="/" element={<Signin />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/performance" element={<Performance />} />
-        <Route path="/insights" element={<Insights />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/class-performance" element={<ClassPerformance />} />
+
+        {/* ✅ Sidebar layout */}
+        <Route element={<Layout />}>
+
+          <Route path="/home" element={<Home />} />
+          <Route path="/performance" element={<Performance />} />
+          <Route path="/class-performance" element={<ClassPerformance />} />
+          <Route path="/insights" element={<Insights />} />
+          <Route path="/settings" element={<Settings />} />
+
+        </Route>
+
       </Routes>
     </BrowserRouter>
   );

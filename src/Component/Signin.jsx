@@ -26,7 +26,6 @@ export default function Signin() {
     e.preventDefault();
     setError("");
 
-    // 🔥 validation
     if (
       !formData.studentId ||
       !formData.password ||
@@ -53,14 +52,13 @@ export default function Signin() {
 
       const newUser = {
         ...formData,
-        subjects: ["Math"], // default subject
+        subjects: [],
         marks: {},
+        marksHistory: []
       };
 
-      // 🔥 IMPORTANT: use API response (contains id)
       const response = await API.post("/users", newUser);
 
-      // ✅ store user WITH id
       localStorage.setItem(
         "currentUser",
         JSON.stringify(response.data)
@@ -69,7 +67,36 @@ export default function Signin() {
       navigate("/home");
 
     } catch (err) {
-      setError("Error creating account. Try again.");
+      // 🔥 FALLBACK (IMPORTANT FIX)
+      console.log("API failed, using localStorage");
+
+      const existingUsers =
+        JSON.parse(localStorage.getItem("users")) || [];
+
+      const exists = existingUsers.find(
+        (u) => u.studentId === formData.studentId
+      );
+
+      if (exists) {
+        setError("User already exists");
+        setLoading(false);
+        return;
+      }
+
+      const newUser = {
+        ...formData,
+        subjects: ["Math"],
+        marks: {},
+        marksHistory: []
+      };
+
+      existingUsers.push(newUser);
+
+      localStorage.setItem("users", JSON.stringify(existingUsers));
+      localStorage.setItem("currentUser", JSON.stringify(newUser));
+
+      navigate("/home");
+
     } finally {
       setLoading(false);
     }
@@ -78,7 +105,6 @@ export default function Signin() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-slate-900 to-black">
 
-      {/* Background glow */}
       <div className="absolute w-96 h-96 bg-indigo-500 rounded-full blur-3xl opacity-20 top-10 left-10"></div>
       <div className="absolute w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-20 bottom-10 right-10"></div>
 
@@ -90,7 +116,6 @@ export default function Signin() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
 
-          {/* Student ID */}
           <input
             name="studentId"
             value={formData.studentId}
@@ -99,7 +124,6 @@ export default function Signin() {
             className="w-full p-3 bg-white/10 text-white rounded-xl outline-none"
           />
 
-          {/* Class */}
           <input
             name="className"
             value={formData.className}
@@ -108,7 +132,6 @@ export default function Signin() {
             className="w-full p-3 bg-white/10 text-white rounded-xl"
           />
 
-          {/* College */}
           <input
             name="college"
             value={formData.college}
@@ -117,7 +140,6 @@ export default function Signin() {
             className="w-full p-3 bg-white/10 text-white rounded-xl"
           />
 
-          {/* Password */}
           <input
             type="password"
             name="password"
@@ -127,12 +149,10 @@ export default function Signin() {
             className="w-full p-3 bg-white/10 text-white rounded-xl"
           />
 
-          {/* Error */}
           {error && (
             <p className="text-red-400 text-sm text-center">{error}</p>
           )}
 
-          {/* Button */}
           <button
             type="submit"
             disabled={loading}
@@ -142,7 +162,6 @@ export default function Signin() {
           </button>
         </form>
 
-        {/* Redirect */}
         <p className="text-sm text-gray-400 mt-4 text-center">
           Already have an account?{" "}
           <Link to="/login" className="text-indigo-400 hover:underline">

@@ -1,5 +1,4 @@
 import { useEffect, useState, useMemo } from "react";
-import Sidebar from "./Sidebar";
 import { API } from "../api";
 
 export default function Insights() {
@@ -104,7 +103,7 @@ export default function Insights() {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-black via-indigo-900 to-black text-white">
 
-      <Sidebar />
+      {/* <Sidebar /> */}
 
       <div className="flex-1 p-8 space-y-6">
 

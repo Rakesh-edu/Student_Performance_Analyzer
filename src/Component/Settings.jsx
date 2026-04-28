@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Sidebar from "./Sidebar";
 import { useNavigate } from "react-router-dom";
 
 export default function Settings() {
@@ -59,7 +58,7 @@ export default function Settings() {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-[#0f172a] via-[#1e1b4b] to-[#0f172a] text-white">
 
-      <Sidebar />
+      {/* <Sidebar /> */}
 
       <div className="flex-1 p-8 space-y-8">
 

@@ -152,6 +152,66 @@
           }
         }
       ]
+    },
+    {
+      "studentId": "22d41a0520",
+      "password": "rakesh",
+      "className": "11",
+      "college": "sicet",
+      "subjects": [
+        "Math",
+        "dsa",
+        "c",
+        "c++"
+      ],
+      "marks": {
+        "Math": 45,
+        "dsa": 65,
+        "c++": 78,
+        "c": 65
+      },
+      "marksHistory": [
+        {
+          "date": "2026-04-28",
+          "marks": {
+            "Math": 45,
+            "dsa": 65,
+            "c++": 78,
+            "c": 65
+          }
+        }
+      ],
+      "id": "Ies4YQLXIUA"
+    },
+    {
+      "studentId": "22d41a0521",
+      "password": "rakesh",
+      "className": "11",
+      "college": "sicet",
+      "subjects": [
+        "c",
+        "c++",
+        "dsa",
+        "os"
+      ],
+      "marks": {
+        "c": 34,
+        "c++": 23,
+        "os": 52,
+        "dsa": 78
+      },
+      "marksHistory": [
+        {
+          "date": "2026-04-28",
+          "marks": {
+            "c": 34,
+            "c++": 23,
+            "os": 52,
+            "dsa": 78
+          }
+        }
+      ],
+      "id": "r1QnA7eNpOg"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
