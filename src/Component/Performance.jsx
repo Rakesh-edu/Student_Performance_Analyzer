@@ -17,10 +17,10 @@ export default function Performance() {
 
   const subjects = user?.subjects || [];
 
-  const users =
-    typeof window !== "undefined"
-      ? JSON.parse(localStorage.getItem("users")) || []
-      : [];
+  const users = useMemo(() => {
+  if (typeof window === "undefined") return [];
+  return JSON.parse(localStorage.getItem("users")) || [];
+}, []);
 
   // ✅ FIXED classmates (useMemo)
   const classmates = useMemo(() => {
@@ -29,7 +29,7 @@ export default function Performance() {
         u.className === user?.className &&
         u.college === user?.college
     );
-  }, [users, user]);
+  }, [user]);
 
   // ✅ FIXED getAverage (useCallback)
   const getAverage = useCallback((sub) => {
@@ -99,7 +99,7 @@ export default function Performance() {
 
       return { sub, status: "Good", color: "text-blue-400" };
     });
-  }, [user, classmates, subjects, getAverage]);
+  }, [user, subjects, getAverage]);
 
   if (!user) return <p className="text-white">Loading...</p>;
 
