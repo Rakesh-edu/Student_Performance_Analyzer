@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { API } from "../api";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, Legend,
   LineChart, Line, CartesianGrid,
@@ -15,83 +14,44 @@ export default function Dashboard() {
   const [newSubject, setNewSubject] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // ✅ FIXED DATA LOADING (API + fallback)
+  // ✅ FIXED: LOAD FROM localStorage ONLY (NO API)
   useEffect(() => {
-    const current =
-      typeof window !== "undefined"
-        ? JSON.parse(localStorage.getItem("currentUser"))
-        : null;
+    if (typeof window === "undefined") return;
+
+    const current = JSON.parse(localStorage.getItem("currentUser"));
+    const allUsers = JSON.parse(localStorage.getItem("users")) || [];
 
     if (!current) {
       setLoading(false);
       return;
     }
 
-    const fetchUsers = async () => {
-      try {
-        const res = await API.get("/users");
-        setUsers(res.data);
+    const updatedUser = allUsers.find(
+      (u) => u.studentId === current.studentId
+    );
 
-        const updatedUser = res.data.find((u) => u.id === current.id);
-        setUser(updatedUser || current);
-
-      } catch (err) {
-        console.log("API failed, using localStorage");
-
-        const localUsers =
-          typeof window !== "undefined"
-            ? JSON.parse(localStorage.getItem("users")) || []
-            : [];
-
-        setUsers(localUsers);
-
-        const updatedUser = localUsers.find(
-          (u) => u.studentId === current.studentId
-        );
-
-        setUser(updatedUser || current);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUsers();
+    setUser(updatedUser || current);
+    setUsers(allUsers);
+    setLoading(false);
   }, []);
 
   const subjects = user?.subjects || [];
 
   // 🔥 Add Subject
-  const addSubject = async () => {
+  const addSubject = () => {
     if (!newSubject.trim()) return;
 
     const updatedUser = {
       ...user,
-      subjects: [...(user.subjects || []), newSubject],
+      subjects: [...subjects, newSubject],
     };
 
-    try {
-      await API.put(`/users/${user.id}`, updatedUser);
-    } catch {
-      console.log("API failed, saving locally");
-    }
-
-    setUser(updatedUser);
-    localStorage.setItem("currentUser", JSON.stringify(updatedUser));
-
-    const existingUsers =
-      JSON.parse(localStorage.getItem("users")) || [];
-
-    const updatedList = existingUsers.map((u) =>
-      u.studentId === updatedUser.studentId ? updatedUser : u
-    );
-
-    localStorage.setItem("users", JSON.stringify(updatedList));
-
+    updateUser(updatedUser);
     setNewSubject("");
   };
 
   // 🔥 Save Marks
-  const saveMarks = async () => {
+  const saveMarks = () => {
     const newEntry = {
       date: new Date().toISOString().split("T")[0],
       marks: marksInput,
@@ -103,12 +63,12 @@ export default function Dashboard() {
       marksHistory: [...(user.marksHistory || []), newEntry],
     };
 
-    try {
-      await API.put(`/users/${user.id}`, updatedUser);
-    } catch {
-      console.log("API failed, saving locally");
-    }
+    updateUser(updatedUser);
+    alert("Marks saved!");
+  };
 
+  // ✅ COMMON UPDATE FUNCTION
+  const updateUser = (updatedUser) => {
     setUser(updatedUser);
     localStorage.setItem("currentUser", JSON.stringify(updatedUser));
 
@@ -120,13 +80,14 @@ export default function Dashboard() {
     );
 
     localStorage.setItem("users", JSON.stringify(updatedList));
-
-    alert("Marks saved!");
+    setUsers(updatedList);
   };
 
   // 🔥 Classmates
   const classmates = users.filter(
-    (u) => u.className === user?.className && u.college === user?.college
+    (u) =>
+      u.className === user?.className &&
+      u.college === user?.college
   );
 
   // 🔥 Average
@@ -141,19 +102,24 @@ export default function Dashboard() {
   // 🔥 Rank
   const rank = useMemo(() => {
     const sorted = [...classmates].sort((a, b) => {
-      const avgA = Object.values(a.marks || {}).reduce((x, y) => x + y, 0);
-      const avgB = Object.values(b.marks || {}).reduce((x, y) => x + y, 0);
-      return avgB - avgA;
+      const totalA = Object.values(a.marks || {}).reduce((x, y) => x + y, 0);
+      const totalB = Object.values(b.marks || {}).reduce((x, y) => x + y, 0);
+      return totalB - totalA;
     });
 
-    const index = sorted.findIndex((s) => s.id === user?.id);
+    const index = sorted.findIndex(
+      (s) => s.studentId === user?.studentId
+    );
+
     return index !== -1 ? index + 1 : "N/A";
   }, [classmates, user]);
 
   // 🔥 Avg Score
   const avgScore = useMemo(() => {
     const vals = Object.values(user?.marks || {});
-    return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
+    return vals.length
+      ? vals.reduce((a, b) => a + b, 0) / vals.length
+      : 0;
   }, [user]);
 
   // 🔥 Chart Data
@@ -178,6 +144,7 @@ export default function Dashboard() {
     return { date: entry.date, score: total };
   });
 
+  // 🔥 Analytics
   const improvement = useMemo(() => {
     if (historyData.length < 2) return 0;
     const prev = historyData[historyData.length - 2].score;
@@ -199,18 +166,7 @@ export default function Dashboard() {
     return latest < prev;
   }, [historyData]);
 
-  const insights = subjects.map((sub) => {
-    const your = user?.marks?.[sub] || 0;
-    const avg = getAverage(sub);
-
-    if (your === 0) return { sub, msg: "No data" };
-    if (your < avg - 10) return { sub, msg: "Needs improvement" };
-    if (your < avg) return { sub, msg: "Below average" };
-    if (your >= avg + 10) return { sub, msg: "Excellent" };
-    return { sub, msg: "Good" };
-  });
-
-  // ✅ FIXED LOADING + USER CHECK
+  // ✅ LOADING FIX
   if (loading) return <p className="text-white p-8">Loading...</p>;
 
   if (!user)
@@ -229,12 +185,120 @@ export default function Dashboard() {
         </h1>
 
         <div className="grid grid-cols-3 gap-6">
-          <div className="card"><p>Average</p><h2>{avgScore.toFixed(1)}%</h2></div>
-          <div className="card"><p>Rank</p><h2>#{rank}</h2></div>
-          <div className="card"><p>Students</p><h2>{classmates.length}</h2></div>
+          <div className="card">
+            <p>Average</p>
+            <h2>{avgScore.toFixed(1)}%</h2>
+          </div>
+          <div className="card">
+            <p>Rank</p>
+            <h2>#{rank}</h2>
+          </div>
+          <div className="card">
+            <p>Students</p>
+            <h2>{classmates.length}</h2>
+          </div>
         </div>
 
-        {/* Rest of your UI remains EXACTLY same */}
+        {/* Add Subject */}
+        <div className="card">
+          <h3>Add Subject</h3>
+          <div className="flex gap-3 mt-3">
+            <input
+              value={newSubject}
+              onChange={(e) => setNewSubject(e.target.value)}
+              className="input"
+              placeholder="Enter subject"
+            />
+            <button onClick={addSubject} className="btn">Add</button>
+          </div>
+        </div>
+
+        {/* Add Marks */}
+        <div className="card">
+          <h3>Add Marks</h3>
+          <div className="grid grid-cols-2 gap-4 mt-3">
+            {subjects.map((s) => (
+              <input
+                key={s}
+                placeholder={s}
+                type="number"
+                className="input"
+                onChange={(e) =>
+                  setMarksInput({
+                    ...marksInput,
+                    [s]: Number(e.target.value),
+                  })
+                }
+              />
+            ))}
+          </div>
+          <button onClick={saveMarks} className="btn mt-4">Save</button>
+        </div>
+
+        {/* Charts */}
+        <div className="grid grid-cols-2 gap-6">
+
+          <div className="card">
+            <h3>Bar Chart</h3>
+            <BarChart width={350} height={250} data={barData}>
+              <XAxis dataKey="subject" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="you" fill="#6366f1" />
+              <Bar dataKey="avg" fill="#22c55e" />
+            </BarChart>
+          </div>
+
+          <div className="card">
+            <h3>Line Chart</h3>
+            <LineChart width={350} height={250} data={lineData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Line type="monotone" dataKey="score" stroke="#6366f1" />
+            </LineChart>
+          </div>
+
+          <div className="card col-span-2">
+            <h3>Pie Chart</h3>
+            <PieChart width={400} height={250}>
+              <Pie data={pieData} dataKey="value" cx="50%" cy="50%" outerRadius={80}>
+                {pieData.map((_, i) => (
+                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </div>
+        </div>
+
+        {/* History */}
+        <div className="card">
+          <h3>Performance Over Time</h3>
+          <LineChart width={500} height={300} data={historyData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis />
+            <Tooltip />
+            <Line type="monotone" dataKey="score" stroke="#22c55e" />
+          </LineChart>
+        </div>
+
+        {/* Growth */}
+        <div className="card">
+          <h3>Growth</h3>
+          <p>Improvement: {improvement}%</p>
+        </div>
+
+        {/* Smart */}
+        <div className="card">
+          <h3>Smart Insights</h3>
+          {bestDay && <p>Best Day: {bestDay.date} ({bestDay.score})</p>}
+          {dropDetected && <p className="text-red-400">Performance dropped ⚠️</p>}
+        </div>
+
       </div>
     </div>
   );
