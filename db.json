@@ -60,12 +60,23 @@
         "chemistry"
       ],
       "marks": {
-        "Math": 12,
-        "physics": 23,
-        "biology": 34,
-        "chemistry": 45
+        "Math": 34,
+        "physics": 34,
+        "biology": 67,
+        "chemistry": 37
       },
-      "id": "np9-YCBv6x4"
+      "id": "np9-YCBv6x4",
+      "marksHistory": [
+        {
+          "date": "2026-04-28",
+          "marks": {
+            "Math": 34,
+            "physics": 34,
+            "chemistry": 37,
+            "biology": 67
+          }
+        }
+      ]
     },
     {
       "studentId": "22d41a0511",

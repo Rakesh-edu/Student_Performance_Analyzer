@@ -16,6 +16,11 @@ export default function ClassPerformance() {
     });
   }, []);
 
+  const data =
+    typeof window !== "undefined"
+      ? JSON.parse(localStorage.getItem("users")) || []
+      : [];
+
   // ✅ Dynamic subjects
   const subjects = useMemo(() => {
     const allSubjects = users.flatMap((u) => u.subjects || []);
@@ -49,8 +54,6 @@ export default function ClassPerformance() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-black via-indigo-900 to-black text-white">
-
-      {/* <Sidebar /> */}
 
       <div className="flex-1 p-8 space-y-6">
 
@@ -105,7 +108,7 @@ export default function ClassPerformance() {
           </div>
         )}
 
-        {/* 🥇 TOP 3 (UPGRADE 🔥) */}
+        {/* 🥇 TOP 3 */}
         <div className="grid grid-cols-3 gap-4">
           {sortedUsers.slice(0, 3).map((u, i) => (
             <div key={u.id} className="card text-center">

@@ -15,7 +15,10 @@ export default function Performance() {
 
   const subjects = user?.subjects || [];
 
-  const users = JSON.parse(localStorage.getItem("users")) || [];
+  const users =
+    typeof window !== "undefined"
+      ? JSON.parse(localStorage.getItem("users")) || []
+      : [];
 
   // 🔥 classmates
   const classmates = users.filter(

@@ -5,39 +5,59 @@ export default function Insights() {
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
 
-  // 🔥 Load current user
+  // 🔥 Load current user (SAFE)
   useEffect(() => {
-    const u = JSON.parse(localStorage.getItem("currentUser"));
-    setUser(u);
+    if (typeof window !== "undefined") {
+      const u = JSON.parse(localStorage.getItem("currentUser"));
+      setUser(u);
+    }
   }, []);
 
-  // 🔥 Fetch all users from API
+  // 🔥 Fetch users (API + fallback)
   useEffect(() => {
-    API.get("/users").then((res) => {
-      setUsers(res.data);
-    });
+    const fetchUsers = async () => {
+      try {
+        const res = await API.get("/users");
+        setUsers(res.data);
+      } catch (err) {
+        console.log("API failed, using localStorage");
+
+        const localUsers =
+          typeof window !== "undefined"
+            ? JSON.parse(localStorage.getItem("users")) || []
+            : [];
+
+        setUsers(localUsers);
+      }
+    };
+
+    fetchUsers();
   }, []);
 
-  // ✅ Dynamic subjects
-  const subjects = user?.subjects?.length ? user.subjects : ["Math"];
+  // ✅ Dynamic subjects (NO default Math now)
+  const subjects = user?.subjects || [];
 
-  // 🔥 Same class users
+  // 🔥 Classmates
   const classmates = users.filter(
     (u) =>
       u.className === user?.className &&
       u.college === user?.college
   );
 
-  // 🔥 Average calculation
+  // 🔥 Average (FIXED - ignore empty marks)
   const getAverage = (sub) => {
-    const total = classmates.reduce(
-      (sum, s) => sum + (s.marks?.[sub] || 0),
-      0
+    const valid = classmates.filter(
+      (s) => s.marks && s.marks[sub] !== undefined
     );
-    return classmates.length ? total / classmates.length : 0;
+
+    if (valid.length === 0) return 0;
+
+    const total = valid.reduce((sum, s) => sum + s.marks[sub], 0);
+
+    return total / valid.length;
   };
 
-  // 🔥 Rank (FIXED ✅)
+  // 🔥 Rank
   const rank = useMemo(() => {
     if (!user) return "N/A";
 
@@ -57,6 +77,9 @@ export default function Insights() {
     return subjects.map((sub) => {
       const your = user?.marks?.[sub] || 0;
       const avg = getAverage(sub);
+
+      if (avg === 0)
+        return { sub, msg: "No class data", type: "neutral" };
 
       if (your === 0)
         return { sub, msg: "No data available", type: "neutral" };
@@ -97,13 +120,10 @@ export default function Insights() {
       ? "📈 You can improve to reach top ranks"
       : "⚠️ You need strong focus to improve performance";
 
-  // 🔥 Safety loading
   if (!user) return <p className="text-white p-8">Loading...</p>;
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-black via-indigo-900 to-black text-white">
-
-      {/* <Sidebar /> */}
 
       <div className="flex-1 p-8 space-y-6">
 

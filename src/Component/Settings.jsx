@@ -7,10 +7,18 @@ export default function Settings() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const u = JSON.parse(localStorage.getItem("currentUser"));
+    const u =
+      typeof window !== "undefined"
+        ? JSON.parse(localStorage.getItem("currentUser"))
+        : null;
+
     setUser(u);
 
-    const theme = localStorage.getItem("theme");
+    const theme =
+      typeof window !== "undefined"
+        ? localStorage.getItem("theme")
+        : null;
+
     if (theme === "light") {
       setDark(false);
       document.documentElement.classList.remove("dark");
@@ -41,7 +49,10 @@ export default function Settings() {
   };
 
   const updateProfile = () => {
-    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const users =
+      typeof window !== "undefined"
+        ? JSON.parse(localStorage.getItem("users")) || []
+        : [];
 
     const updatedUsers = users.map((u) =>
       u.studentId === user.studentId ? user : u
@@ -57,8 +68,6 @@ export default function Settings() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-[#0f172a] via-[#1e1b4b] to-[#0f172a] text-white">
-
-      {/* <Sidebar /> */}
 
       <div className="flex-1 p-8 space-y-8">
 
@@ -108,7 +117,6 @@ export default function Settings() {
             <p className="text-sm text-gray-400">Switch between light & dark</p>
           </div>
 
-          {/* Toggle Switch */}
           <div
             onClick={toggleTheme}
             className={`w-14 h-7 flex items-center rounded-full p-1 cursor-pointer transition ${
