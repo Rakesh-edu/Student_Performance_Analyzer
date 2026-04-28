@@ -15,7 +15,9 @@ export default function Performance() {
     }
   }, []);
 
-  const subjects = user?.subjects || [];
+  const subjects = useMemo(() => {
+  return user?.subjects || [];
+}, [user]);
 
   const users = useMemo(() => {
   if (typeof window === "undefined") return [];
@@ -29,7 +31,7 @@ export default function Performance() {
         u.className === user?.className &&
         u.college === user?.college
     );
-  }, [user]);
+  }, [user, users]);
 
   // ✅ FIXED getAverage (useCallback)
   const getAverage = useCallback((sub) => {

@@ -35,7 +35,9 @@ export default function Insights() {
   }, []);
 
   // ✅ Dynamic subjects (NO default Math now)
-  const subjects = user?.subjects || [];
+  const subjects = useMemo(() => {
+  return user?.subjects || [];
+}, [user]);
 
   // 🔥 Classmates
   const classmates = useMemo(() => {
