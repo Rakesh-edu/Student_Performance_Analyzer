@@ -1,5 +1,4 @@
 import { useEffect, useState, useMemo } from "react";
-import Sidebar from "./Sidebar";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, Legend,
   LineChart, Line, CartesianGrid
@@ -7,51 +6,82 @@ import {
 
 export default function Performance() {
   const [user, setUser] = useState(null);
+  const [filter, setFilter] = useState("month");
 
   useEffect(() => {
     const u = JSON.parse(localStorage.getItem("currentUser"));
     setUser(u);
   }, []);
 
-  // ✅ Dynamic subjects
-  const subjects = user?.subjects?.length ? user.subjects : ["Math"];
+  const subjects = user?.subjects || [];
 
   const users = JSON.parse(localStorage.getItem("users")) || [];
 
-  // Classmates
+  // 🔥 classmates
   const classmates = users.filter(
     (u) =>
       u.className === user?.className &&
       u.college === user?.college
   );
 
-  // Average
+  // ✅ FIXED AVERAGE LOGIC
   const getAverage = (sub) => {
-    const total = classmates.reduce(
-      (sum, s) => sum + (s.marks?.[sub] || 0),
+    const validStudents = classmates.filter(
+      (s) => s.marks && s.marks[sub] !== undefined
+    );
+
+    if (validStudents.length === 0) return 0;
+
+    const total = validStudents.reduce(
+      (sum, s) => sum + s.marks[sub],
       0
     );
-    return classmates.length ? total / classmates.length : 0;
+
+    return total / validStudents.length;
   };
 
-  // Bar Chart
+  // 🔥 FILTER HISTORY
+  const filteredHistory = useMemo(() => {
+    if (!user?.marksHistory) return [];
+
+    const now = new Date();
+
+    return user.marksHistory.filter((entry) => {
+      const entryDate = new Date(entry.date);
+      const diff = (now - entryDate) / (1000 * 60 * 60 * 24);
+
+      if (filter === "day") return diff <= 1;
+      if (filter === "week") return diff <= 7;
+      if (filter === "month") return diff <= 30;
+      if (filter === "year") return diff <= 365;
+
+      return true;
+    });
+  }, [user, filter]);
+
+  // 🔥 HISTORY DATA
+  const historyChartData = filteredHistory.map((entry) => {
+    const total = Object.values(entry.marks || {}).reduce((a, b) => a + b, 0);
+    return {
+      date: entry.date,
+      score: total,
+    };
+  });
+
+  // 🔥 BAR DATA
   const barData = subjects.map((sub) => ({
     subject: sub,
     you: user?.marks?.[sub] || 0,
     avg: Number(getAverage(sub).toFixed(1)),
   }));
 
-  // Line Chart
-  const lineData = subjects.map((sub) => ({
-    subject: sub,
-    score: user?.marks?.[sub] || 0,
-  }));
-
-  // Analysis
+  // 🔥 ANALYSIS
   const analysis = useMemo(() => {
     return subjects.map((sub) => {
       const your = user?.marks?.[sub] || 0;
       const avg = getAverage(sub);
+
+      if (avg === 0) return { sub, status: "No Data", color: "text-gray-400" };
 
       if (your < avg - 10)
         return { sub, status: "Weak", color: "text-red-400" };
@@ -59,6 +89,7 @@ export default function Performance() {
         return { sub, status: "Below Avg", color: "text-yellow-400" };
       if (your >= avg + 10)
         return { sub, status: "Strong", color: "text-green-400" };
+
       return { sub, status: "Good", color: "text-blue-400" };
     });
   }, [user, classmates]);
@@ -68,13 +99,47 @@ export default function Performance() {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-black via-indigo-900 to-black text-white">
 
-      <Sidebar />
-
       <div className="flex-1 p-8 space-y-6">
 
         <h1 className="text-2xl font-semibold">Performance Analysis</h1>
 
-        {/* Bar Chart */}
+        {/* 🔥 FILTER BUTTONS */}
+        <div className="flex gap-3">
+          {["day", "week", "month", "year"].map((type) => (
+            <button
+              key={type}
+              onClick={() => setFilter(type)}
+              className={`px-4 py-2 rounded-xl ${
+                filter === type
+                  ? "bg-indigo-600"
+                  : "bg-white/10 hover:bg-white/20"
+              }`}
+            >
+              {type.toUpperCase()}
+            </button>
+          ))}
+        </div>
+
+        {/* 🔥 HISTORY CHART */}
+        <div className="card">
+          <h3 className="mb-4">
+            Performance Trend ({filter.toUpperCase()})
+          </h3>
+
+          {historyChartData.length ? (
+            <LineChart width={500} height={300} data={historyChartData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip />
+              <Line type="monotone" dataKey="score" stroke="#22c55e" />
+            </LineChart>
+          ) : (
+            <p>No data available</p>
+          )}
+        </div>
+
+        {/* 🔥 BAR CHART */}
         <div className="card">
           <h3 className="mb-4">Your Marks vs Class Average</h3>
 
@@ -88,20 +153,7 @@ export default function Performance() {
           </BarChart>
         </div>
 
-        {/* Line Chart */}
-        <div className="card">
-          <h3 className="mb-4">Performance Trend</h3>
-
-          <LineChart width={500} height={300} data={lineData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="subject" />
-            <YAxis />
-            <Tooltip />
-            <Line type="monotone" dataKey="score" stroke="#6366f1" />
-          </LineChart>
-        </div>
-
-        {/* Table */}
+        {/* 🔥 TABLE */}
         <div className="card">
           <h3 className="mb-4">Detailed Comparison</h3>
 
@@ -128,17 +180,6 @@ export default function Performance() {
               ))}
             </tbody>
           </table>
-        </div>
-
-        {/* Summary */}
-        <div className="card">
-          <h3 className="mb-4">Performance Summary</h3>
-
-          {analysis.map((a) => (
-            <p key={a.sub} className={a.color}>
-              {a.sub}: {a.status}
-            </p>
-          ))}
         </div>
 
       </div>
