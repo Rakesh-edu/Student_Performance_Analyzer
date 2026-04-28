@@ -8,32 +8,28 @@ export default function ClassPerformance() {
   const [filterSubject, setFilterSubject] = useState("overall");
   const [loading, setLoading] = useState(true);
 
-  // 🔥 Fetch users from API
+  // 🔥 Fetch users from API (with fallback)
   useEffect(() => {
-  const fetchUsers = async () => {
-    try {
-      const res = await API.get("/users");
-      setUsers(res.data);
-    } catch (err) {
-      console.log("API failed, using localStorage");
+    const fetchUsers = async () => {
+      try {
+        const res = await API.get("/users");
+        setUsers(res.data);
+      } catch (err) {
+        console.log("API failed, using localStorage");
 
-      const localUsers =
-        typeof window !== "undefined"
-          ? JSON.parse(localStorage.getItem("users")) || []
-          : [];
+        const localUsers =
+          typeof window !== "undefined"
+            ? JSON.parse(localStorage.getItem("users")) || []
+            : [];
 
-      setUsers(localUsers);
-    } finally {
-      setLoading(false);
-    }
-  };
+        setUsers(localUsers);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  fetchUsers();
-}, []);
-  // const data =
-  //   typeof window !== "undefined"
-  //     ? JSON.parse(localStorage.getItem("users")) || []
-  //     : [];
+    fetchUsers();
+  }, []);
 
   // ✅ Dynamic subjects
   const subjects = useMemo(() => {

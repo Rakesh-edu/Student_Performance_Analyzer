@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, Legend,
   LineChart, Line, CartesianGrid
@@ -9,11 +9,11 @@ export default function Performance() {
   const [filter, setFilter] = useState("month");
 
   useEffect(() => {
-  if (typeof window !== "undefined") {
-    const u = JSON.parse(localStorage.getItem("currentUser"));
-    setUser(u);
-  }
-}, []);
+    if (typeof window !== "undefined") {
+      const u = JSON.parse(localStorage.getItem("currentUser"));
+      setUser(u);
+    }
+  }, []);
 
   const subjects = user?.subjects || [];
 
@@ -22,15 +22,17 @@ export default function Performance() {
       ? JSON.parse(localStorage.getItem("users")) || []
       : [];
 
-  // 🔥 classmates
-  const classmates = users.filter(
-    (u) =>
-      u.className === user?.className &&
-      u.college === user?.college
-  );
+  // ✅ FIXED classmates (useMemo)
+  const classmates = useMemo(() => {
+    return users.filter(
+      (u) =>
+        u.className === user?.className &&
+        u.college === user?.college
+    );
+  }, [users, user]);
 
-  // ✅ FIXED AVERAGE LOGIC
-  const getAverage = (sub) => {
+  // ✅ FIXED getAverage (useCallback)
+  const getAverage = useCallback((sub) => {
     const validStudents = classmates.filter(
       (s) => s.marks && s.marks[sub] !== undefined
     );
@@ -43,7 +45,7 @@ export default function Performance() {
     );
 
     return total / validStudents.length;
-  };
+  }, [classmates]);
 
   // 🔥 FILTER HISTORY
   const filteredHistory = useMemo(() => {

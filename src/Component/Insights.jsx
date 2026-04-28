@@ -38,11 +38,13 @@ export default function Insights() {
   const subjects = user?.subjects || [];
 
   // 🔥 Classmates
-  const classmates = users.filter(
+  const classmates = useMemo(() => {
+  return users.filter(
     (u) =>
       u.className === user?.className &&
       u.college === user?.college
   );
+}, [users, user]);
 
   // 🔥 Average (FIXED - ignore empty marks)
   const getAverage = useCallback((sub) => {
