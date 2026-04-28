@@ -223,6 +223,16 @@
         }
       ],
       "id": "r1QnA7eNpOg"
+    },
+    {
+      "studentId": "22d41a0508",
+      "password": "rakesh",
+      "className": "10",
+      "college": "sicet",
+      "subjects": [],
+      "marks": {},
+      "marksHistory": [],
+      "id": "QNjFsUKxFyg"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

@@ -59,6 +59,14 @@ export default function Signin() {
 
       const response = await API.post("/users", newUser);
 
+      // ✅ IMPORTANT FIX: also save in localStorage
+      const existingUsers =
+        JSON.parse(localStorage.getItem("users")) || [];
+
+      existingUsers.push(response.data);
+
+      localStorage.setItem("users", JSON.stringify(existingUsers));
+
       localStorage.setItem(
         "currentUser",
         JSON.stringify(response.data)
@@ -67,7 +75,7 @@ export default function Signin() {
       navigate("/home");
 
     } catch (err) {
-      // 🔥 FALLBACK (IMPORTANT FIX)
+      // 🔥 FALLBACK (unchanged logic)
       console.log("API failed, using localStorage");
 
       const existingUsers =
@@ -85,7 +93,7 @@ export default function Signin() {
 
       const newUser = {
         ...formData,
-        subjects: ["Math"],
+        subjects: [],
         marks: {},
         marksHistory: []
       };

@@ -18,11 +18,11 @@ export default function Login() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // ✅ FIXED LOGIN (API + localStorage fallback)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    // basic validation
     if (!formData.studentId || !formData.password) {
       setError("Please fill all fields");
       return;
@@ -31,9 +31,22 @@ export default function Login() {
     try {
       setLoading(true);
 
-      const res = await API.get("/users");
+      let users = [];
 
-      const user = res.data.find(
+      // 🔥 Try API
+      try {
+        const res = await API.get("/users");
+        users = res.data;
+      } catch (err) {
+        console.log("API failed, using localStorage");
+
+        users =
+          typeof window !== "undefined"
+            ? JSON.parse(localStorage.getItem("users")) || []
+            : [];
+      }
+
+      const user = users.find(
         (u) =>
           u.studentId === formData.studentId &&
           u.password === formData.password
@@ -47,7 +60,7 @@ export default function Login() {
       }
 
     } catch (err) {
-      setError("Server error. Try again.");
+      setError("Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -56,7 +69,6 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-slate-900 to-black">
 
-      {/* Background glow */}
       <div className="absolute w-96 h-96 bg-indigo-500 rounded-full blur-3xl opacity-20 top-10 right-10"></div>
       <div className="absolute w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-20 bottom-10 left-10"></div>
 
@@ -68,7 +80,6 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
 
-          {/* Student ID */}
           <input
             name="studentId"
             value={formData.studentId}
@@ -77,7 +88,6 @@ export default function Login() {
             className="w-full p-3 bg-white/10 text-white rounded-xl outline-none"
           />
 
-          {/* Password */}
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
@@ -88,7 +98,6 @@ export default function Login() {
               className="w-full p-3 bg-white/10 text-white rounded-xl outline-none"
             />
 
-            {/* Toggle */}
             <span
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-3 text-sm text-gray-400 cursor-pointer"
@@ -97,12 +106,10 @@ export default function Login() {
             </span>
           </div>
 
-          {/* Error */}
           {error && (
             <p className="text-red-400 text-sm text-center">{error}</p>
           )}
 
-          {/* Button */}
           <button
             type="submit"
             disabled={loading}
@@ -113,7 +120,6 @@ export default function Login() {
 
         </form>
 
-        {/* Redirect */}
         <p className="text-sm text-gray-400 mt-4 text-center">
           New user?{" "}
           <Link to="/" className="text-indigo-400 hover:underline">
