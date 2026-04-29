@@ -1,238 +1,212 @@
 {
   "users": [
     {
-      "studentId": "22d41a0509",
+      "studentId": "101",
       "password": "rakesh",
-      "className": "10",
-      "college": "bvrit",
-      "subjects": [
-        "Math",
-        "physics",
-        "biology",
-        "chemistry"
-      ],
-      "marks": {
-        "Math": 100,
-        "physics": 100,
-        "biology": 100,
-        "chemistry": 100
-      },
-      "id": "eNX4PU0SJ7Y",
-      "marksHistory": [
-        {
-          "date": "2026-04-27",
-          "marks": {
-            "Math": 99,
-            "physics": 45,
-            "biology": 87,
-            "chemistry": 23
-          }
-        },
-        {
-          "date": "2026-04-27",
-          "marks": {
-            "Math": 98,
-            "physics": 45,
-            "biology": 87,
-            "chemistry": 23
-          }
-        },
-        {
-          "date": "2026-04-27",
-          "marks": {
-            "Math": 100,
-            "physics": 100,
-            "biology": 100,
-            "chemistry": 100
-          }
-        }
-      ]
-    },
-    {
-      "studentId": "22d41a0510",
-      "password": "rakesh",
-      "className": "10",
-      "college": "bvrit",
-      "subjects": [
-        "Math",
-        "physics",
-        "biology",
-        "chemistry"
-      ],
-      "marks": {
-        "Math": 34,
-        "physics": 34,
-        "biology": 67,
-        "chemistry": 37
-      },
-      "id": "np9-YCBv6x4",
-      "marksHistory": [
-        {
-          "date": "2026-04-28",
-          "marks": {
-            "Math": 34,
-            "physics": 34,
-            "chemistry": 37,
-            "biology": 67
-          }
-        }
-      ]
-    },
-    {
-      "studentId": "22d41a0511",
-      "password": "rakesh",
-      "className": "10",
-      "college": "bvrit",
-      "subjects": [
-        "Math",
-        "physics",
-        "biology",
-        "chemistry"
-      ],
-      "marks": {
-        "Math": 11,
-        "physics": 12,
-        "biology": 13,
-        "chemistry": 14
-      },
-      "id": "gSRlsbJmwhI"
-    },
-    {
-      "studentId": "22d41a0512",
-      "password": "rakesh",
-      "className": "10",
-      "college": "bvrit",
-      "subjects": [
-        "Math",
-        "physics",
-        "biology",
-        "chemistry"
-      ],
-      "marks": {
-        "Math": 100,
-        "physics": 100,
-        "chemistry": 100,
-        "biology": 100
-      },
-      "id": "UUWiWxjbnWY"
-    },
-    {
-      "studentId": "22d41a0513",
-      "password": "rakesh",
-      "className": "10",
-      "college": "bvrit",
-      "subjects": [
-        "Math",
-        "physics",
-        "chemistry",
-        "biology"
-      ],
-      "marks": {
-        "Math": 11,
-        "physics": 12,
-        "chemistry": null,
-        "biology": 14
-      },
-      "id": "-OFoJ1_Ugrk",
-      "marksHistory": [
-        {
-          "date": "2026-04-27",
-          "marks": {
-            "Math": 11,
-            "physics": 12,
-            "chemistry": 13,
-            "biology": 14
-          }
-        },
-        {
-          "date": "2026-04-27",
-          "marks": {
-            "Math": 11,
-            "physics": 12,
-            "chemistry": 13,
-            "biology": 14
-          }
-        },
-        {
-          "date": "2026-04-27",
-          "marks": {
-            "Math": 11,
-            "physics": 12,
-            "chemistry": null,
-            "biology": 14
-          }
-        }
-      ]
-    },
-    {
-      "studentId": "22d41a0520",
-      "password": "rakesh",
-      "className": "11",
-      "college": "sicet",
-      "subjects": [
-        "Math",
-        "dsa",
-        "c",
-        "c++"
-      ],
-      "marks": {
-        "Math": 45,
-        "dsa": 65,
-        "c++": 78,
-        "c": 65
-      },
-      "marksHistory": [
-        {
-          "date": "2026-04-28",
-          "marks": {
-            "Math": 45,
-            "dsa": 65,
-            "c++": 78,
-            "c": 65
-          }
-        }
-      ],
-      "id": "Ies4YQLXIUA"
-    },
-    {
-      "studentId": "22d41a0521",
-      "password": "rakesh",
-      "className": "11",
+      "className": "15",
       "college": "sicet",
       "subjects": [
         "c",
         "c++",
-        "dsa",
-        "os"
+        "java",
+        "python"
       ],
       "marks": {
-        "c": 34,
-        "c++": 23,
-        "os": 52,
-        "dsa": 78
+        "java": 89,
+        "python": 38,
+        "c": 52,
+        "c++": 74
+      },
+      "marksHistory": [],
+      "id": "kQCkQ26Rexk"
+    },
+    {
+      "studentId": "102",
+      "password": "rakesh",
+      "className": "15",
+      "college": "sicet",
+      "subjects": [
+        "c",
+        "c++",
+        "java",
+        "python"
+      ],
+      "marks": {
+        "java": 59,
+        "python": 78,
+        "c": 42,
+        "c++": 64
+      },
+      "marksHistory": [],
+      "id": "8zQJlNTU2d0"
+    },
+    {
+      "studentId": "103",
+      "password": "rakesh",
+      "className": "15",
+      "college": "sicet",
+      "subjects": [
+        "c",
+        "c++",
+        "java",
+        "python"
+      ],
+      "marks": {},
+      "marksHistory": [],
+      "id": "lvhxABm6Pow"
+    },
+    {
+      "studentId": "104",
+      "password": "rakesh",
+      "className": "15",
+      "college": "sicet",
+      "subjects": [
+        "c",
+        "c++",
+        "java",
+        "python"
+      ],
+      "marks": {
+        "java": 39,
+        "python": 58,
+        "c": 12,
+        "c++": 34
+      },
+      "marksHistory": [],
+      "id": "Kva94hE7J1k"
+    },
+    {
+      "studentId": "105",
+      "password": "rakesh",
+      "className": "15",
+      "college": "sicet",
+      "subjects": [
+        "c",
+        "c++",
+        "java",
+        "python"
+      ],
+      "marks": {
+        "java": 49,
+        "python": 25,
+        "c": 45,
+        "c++": 85
       },
       "marksHistory": [
         {
-          "date": "2026-04-28",
+          "date": "2026-04-29",
           "marks": {
-            "c": 34,
-            "c++": 23,
-            "os": 52,
-            "dsa": 78
+            "java": 45
+          }
+        },
+        {
+          "date": "2026-04-29",
+          "marks": {
+            "java": 45,
+            "python": 67
+          }
+        },
+        {
+          "date": "2026-04-29",
+          "marks": {
+            "c": 45,
+            "c++": 85,
+            "python": 25,
+            "java": 49
           }
         }
       ],
-      "id": "r1QnA7eNpOg"
+      "id": "CwgxGsye_Tc"
     },
     {
-      "studentId": "22d41a0508",
+      "studentId": "110",
       "password": "rakesh",
-      "className": "10",
-      "college": "sicet",
-      "subjects": [],
-      "marks": {},
-      "marksHistory": [],
-      "id": "QNjFsUKxFyg"
+      "className": "16",
+      "college": "siiet",
+      "subjects": [
+        "c",
+        "c++",
+        "java",
+        "python"
+      ],
+      "marks": {
+        "c": 12,
+        "c++": 32,
+        "java": 45,
+        "python": 34
+      },
+      "marksHistory": [
+        {
+          "date": "2026-04-29",
+          "marks": {
+            "c": 12,
+            "c++": 32,
+            "java": 45,
+            "python": 34
+          }
+        }
+      ],
+      "id": "appCBaZnuSw"
+    },
+    {
+      "studentId": "111",
+      "password": "rakesh",
+      "className": "16",
+      "college": "siiet",
+      "subjects": [
+        "c",
+        "c++",
+        "java",
+        "python"
+      ],
+      "marks": {
+        "c": 44,
+        "c++": 65,
+        "python": 87,
+        "java": 89
+      },
+      "marksHistory": [
+        {
+          "date": "2026-04-29",
+          "marks": {
+            "c": 44,
+            "c++": 65,
+            "python": 87,
+            "java": 89
+          }
+        }
+      ],
+      "id": "XCG8VcRsunE"
+    },
+    {
+      "studentId": "Rakesh",
+      "password": "rakesh",
+      "className": "16",
+      "college": "siiet",
+      "subjects": [
+        "c",
+        "c+",
+        "java",
+        "python"
+      ],
+      "marks": {
+        "c": 99,
+        "java": 99,
+        "c+": 99,
+        "python": 99
+      },
+      "marksHistory": [
+        {
+          "date": "2026-04-29",
+          "marks": {
+            "c": 99,
+            "java": 99,
+            "c+": 99,
+            "python": 99
+          }
+        }
+      ],
+      "id": "Blz5o3sB6Ao"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

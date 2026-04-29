@@ -18,7 +18,7 @@ export default function Login() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // ✅ FIXED LOGIN (API + localStorage fallback)
+  // ✅ FULL FIXED LOGIN
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -33,7 +33,7 @@ export default function Login() {
 
       let users = [];
 
-      // 🔥 Try API
+      // 🔥 Try API first
       try {
         const res = await API.get("/users");
         users = res.data;
@@ -53,7 +53,12 @@ export default function Login() {
       );
 
       if (user) {
+        // ✅ IMPORTANT FIX → store ALL users also
+        localStorage.setItem("users", JSON.stringify(users));
+
+        // ✅ store current user
         localStorage.setItem("currentUser", JSON.stringify(user));
+
         navigate("/home");
       } else {
         setError("Invalid Student ID or Password");

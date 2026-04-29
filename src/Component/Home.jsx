@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
+import { API } from "../api";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, Legend,
   LineChart, Line, CartesianGrid,
@@ -7,7 +8,6 @@ import {
 
 const COLORS = ["#6366f1", "#22d3ee", "#f59e0b", "#ef4444", "#a78bfa"];
 
-// ─── Stat Card ────────────────────────────────────────────────────────────────
 function StatCard({ label, value, icon, accent }) {
   return (
     <div style={{
@@ -35,7 +35,6 @@ function StatCard({ label, value, icon, accent }) {
   );
 }
 
-// ─── Section Card ─────────────────────────────────────────────────────────────
 function Card({ title, children, full }) {
   return (
     <div style={{
@@ -101,7 +100,6 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
-// ─── Main Dashboard ────────────────────────────────────────────────────────────
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
@@ -138,25 +136,36 @@ export default function Dashboard() {
     alert("Marks saved!");
   };
 
-  const updateUser = (updatedUser) => {
-    setUser(updatedUser);
-    localStorage.setItem("currentUser", JSON.stringify(updatedUser));
-    const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
-    const updatedList = existingUsers.map((u) =>
-      u.studentId === updatedUser.studentId ? updatedUser : u
-    );
-    localStorage.setItem("users", JSON.stringify(updatedList));
-    setUsers(updatedList);
-  };
+ const updateUser = async (updatedUser) => {
+  setUser(updatedUser);
 
-  const classmates = users.filter(
-    (u) => u.className === user?.className && u.college === user?.college
+  // update current user locally
+  localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+
+  try {
+    // ✅ send update to json-server
+    await API.put(`/users/${updatedUser.id}`, updatedUser);
+
+    // refresh users from server
+    const res = await API.get("/users");
+    setUsers(res.data);
+
+  } catch (err) {
+    console.error("Failed to update server:", err);
+  }
+};
+
+  // FIX 1: classmates properly memoized
+  const classmates = useMemo(() =>
+    users.filter((u) => u.className === user?.className && u.college === user?.college),
+    [users, user]
   );
 
-  const getAverage = (sub) => {
+  // FIX 2: getAverage as useCallback with stable classmates dep
+  const getAverage = useCallback((sub) => {
     const total = classmates.reduce((sum, s) => sum + (s.marks?.[sub] || 0), 0);
     return classmates.length ? total / classmates.length : 0;
-  };
+  }, [classmates]);
 
   const rank = useMemo(() => {
     const sorted = [...classmates].sort((a, b) => {
@@ -173,26 +182,40 @@ export default function Dashboard() {
     return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
   }, [user]);
 
-  const barData = subjects.map((sub) => ({
-    subject: sub,
-    you: user?.marks?.[sub] || 0,
-    avg: Number(getAverage(sub).toFixed(1)),
-  }));
+  // FIX 3: historyData memoized so dependent useMemos are stable
+  const historyData = useMemo(() =>
+    (user?.marksHistory || []).map((entry) => {
+      const total = Object.values(entry.marks || {}).reduce((a, b) => a + b, 0);
+      return { date: entry.date, score: total };
+    }),
+    [user]
+  );
 
-  const lineData = subjects.map((sub) => ({
-    name: sub,
-    score: user?.marks?.[sub] || 0,
-  }));
+  // FIX 4: chart data memoized
+  const barData = useMemo(() =>
+    subjects.map((sub) => ({
+      subject: sub,
+      you: user?.marks?.[sub] || 0,
+      avg: Number(getAverage(sub).toFixed(1)),
+    })),
+    [subjects, user, getAverage]
+  );
 
-  const pieData = subjects.map((sub) => ({
-    name: sub,
-    value: user?.marks?.[sub] || 0,
-  }));
+  const lineData = useMemo(() =>
+    subjects.map((sub) => ({
+      name: sub,
+      score: user?.marks?.[sub] || 0,
+    })),
+    [subjects, user]
+  );
 
-  const historyData = (user?.marksHistory || []).map((entry) => {
-    const total = Object.values(entry.marks || {}).reduce((a, b) => a + b, 0);
-    return { date: entry.date, score: total };
-  });
+  const pieData = useMemo(() =>
+    subjects.map((sub) => ({
+      name: sub,
+      value: user?.marks?.[sub] || 0,
+    })),
+    [subjects, user]
+  );
 
   const improvement = useMemo(() => {
     if (historyData.length < 2) return 0;
@@ -232,10 +255,8 @@ export default function Dashboard() {
       color: "#f1f5f9",
       fontFamily: "'Sora', 'Segoe UI', sans-serif",
     }}>
-      {/* Import Google Font */}
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap');`}</style>
 
-      {/* ── RIGHT CONTENT AREA ───────────────────────────────────────────── */}
       <div style={{ flex: 1, padding: "36px 40px", overflowY: "auto", maxWidth: 1200 }}>
 
         {/* Header */}
@@ -268,7 +289,7 @@ export default function Dashboard() {
           <StatCard label="Classmates"    value={classmates.length}        icon="👥" accent="#22d3ee" />
         </div>
 
-        {/* Add Subject + Add Marks side-by-side */}
+        {/* Add Subject + Add Marks */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
           <Card title="Add Subject">
             <div style={{ display: "flex", gap: 10 }}>
@@ -413,7 +434,6 @@ export default function Dashboard() {
               ) : (
                 <p style={{ color: "#64748b", fontSize: 13 }}>No history yet.</p>
               )}
-
               {dropDetected && (
                 <div style={{
                   display: "flex", alignItems: "center", gap: 10,
