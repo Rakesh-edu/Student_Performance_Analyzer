@@ -15,7 +15,7 @@ https://student-performance-analyzer-fn77.vercel.app/
 - React.js  
 - Tailwind CSS  
 - Recharts (for graphs)  
-- LocalStorage (for saving data)
+- LocalStorage (for saving data) also API
 
 ---
 
